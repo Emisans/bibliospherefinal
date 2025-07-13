@@ -1,7 +1,7 @@
 package Dao;
 
 import java.sql.*;
-import java.util.*;
+import Model.Utente; // ✅ Import corretto
 
 public class UtenteDAO {
 
@@ -44,5 +44,4 @@ public class UtenteDAO {
         return result > 0;
     }
 }
-
 
