@@ -2,10 +2,7 @@ package Control;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import dao.UtenteDao;
 import model.Utente;
@@ -16,33 +13,28 @@ import java.sql.SQLException;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        String error = null;
-
         UtenteDao dao = new UtenteDao();
+
         try {
             Utente utente = dao.cercaUtentePerEmail(email);
-
             if (utente != null && BCrypt.checkpw(password, utente.getPassword())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("utenteLoggato", utente);
-
-                response.sendRedirect("jsp/areaPersonale.jsp");
-                return;
+                session.setAttribute("email", utente.getEmail());
+                response.sendRedirect("jsp/areapersonale.jsp");
             } else {
-                error = "Email o password errata!";
+                request.setAttribute("error", "Email o password errata!");
+                request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
             }
         } catch (SQLException e) {
-            error = "Errore di connessione al database.";
             e.printStackTrace();
+            request.setAttribute("error", "Errore di connessione al database.");
+            request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
         }
-
-        request.setAttribute("error", error);
-        request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
     }
 }
+
+

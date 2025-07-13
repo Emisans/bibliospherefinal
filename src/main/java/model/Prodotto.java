@@ -19,7 +19,6 @@ public class Prodotto {
         this.immagine = immagine;
     }
 
-    // Getter e setter
     public int getId() { return id; }
     public String getNome() { return nome; }
     public String getDescrizione() { return descrizione; }
@@ -36,3 +35,4 @@ public class Prodotto {
     public void setQuantita(int quantita) { this.quantita = quantita; }
     public void setImmagine(String immagine) { this.immagine = immagine; }
 }
+

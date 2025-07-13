@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+    <p><a href="CarrelloServlet"><b>Visualizza carrello</b></a></p>
     <h1>Catalogo Prodotti</h1>
     <%
         List<Prodotto> prodotti = (List<Prodotto>) request.getAttribute("prodotti");
@@ -18,7 +19,13 @@
             <p><%= p.getDescrizione() %></p>
             <p>Prezzo: €<%= p.getPrezzo() %> + IVA: <%= p.getIva() %>%</p>
             <p>Disponibili: <%= p.getQuantita() %></p>
+            <form action="AggiungiCarrello" method="post">
+                <input type="hidden" name="id" value="<%= p.getId() %>">
+                <input type="number" name="quantita" value="1" min="1" max="<%= p.getQuantita() %>">
+                <button type="submit">Aggiungi al carrello</button>
+            </form>
         </div>
+        <hr>
     <%
             }
         } else {
@@ -29,3 +36,5 @@
     %>
 </body>
 </html>
+
+
