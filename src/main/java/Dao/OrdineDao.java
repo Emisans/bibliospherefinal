@@ -1,13 +1,13 @@
-package dao;
-
-import model.Carrello;
-import model.CarrelloItem;
-import model.Ordine;
+package Dao;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import Model.Carrello;
+import Model.CarrelloItem;
+import Model.Ordine;
 
 public class OrdineDao {
 
@@ -109,7 +109,7 @@ public class OrdineDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     CarrelloItem item = new CarrelloItem(
-                        new model.Prodotto(
+                        new Model.Prodotto(
                             rs.getInt("id"),
                             rs.getString("nome"),
                             rs.getString("descrizione"),

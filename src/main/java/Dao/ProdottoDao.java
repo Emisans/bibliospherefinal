@@ -1,9 +1,10 @@
-package dao;
+package Dao;
 
-import model.Prodotto;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import Model.Prodotto;
 
 public class ProdottoDao {
     private static final String URL = "jdbc:mysql://localhost:3306/bibliosphere";

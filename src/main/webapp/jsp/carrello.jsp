@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="model.Carrello" %>
-<%@ page import="model.CarrelloItem" %>
+<%@ page import="Model.Carrello" %>
+<%@ page import="Model.CarrelloItem" %>
 <%@ page import="java.util.List" %>
 <html>
 <head>

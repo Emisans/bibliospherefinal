@@ -1,12 +1,13 @@
 package Control;
 
-import model.Carrello;
-import model.Prodotto;
-import dao.ProdottoDao;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
+import Dao.ProdottoDao;
+import Model.Carrello;
+import Model.Prodotto;
+
 import java.io.IOException;
 
 @WebServlet("/AggiungiCarrello")

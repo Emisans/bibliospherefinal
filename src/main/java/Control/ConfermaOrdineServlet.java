@@ -1,11 +1,12 @@
 package Control;
 
-import model.Carrello;
-import dao.OrdineDao;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
+import Dao.OrdineDao;
+import Model.Carrello;
+
 import java.io.IOException;
 
 @WebServlet("/ConfermaOrdine")

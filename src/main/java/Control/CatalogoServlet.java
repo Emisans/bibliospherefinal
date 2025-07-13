@@ -1,11 +1,12 @@
 package Control;
 
-import model.Prodotto;
-import dao.ProdottoDao;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
+import Dao.ProdottoDao;
+import Model.Prodotto;
+
 import java.io.IOException;
 import java.util.List;
 

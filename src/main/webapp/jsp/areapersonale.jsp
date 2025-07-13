@@ -1,20 +1,22 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="model.Utente" %>
-<html>
-<head>
-    <title>Area Personale</title>
-</head>
-<body>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="Model.Utente" %>
 <%
-    Utente utente = (Utente) session.getAttribute("utenteLoggato");
+    Utente utente = (Utente) session.getAttribute("utente");
     if (utente == null) {
         response.sendRedirect("login.jsp");
         return;
     }
 %>
-    <h1>Ciao, <%= utente.getNome() %>!</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Area Personale</title>
+</head>
+<body>
+    <h2>Benvenuto, <%= utente.getNome() %>!</h2>
     <p>Email: <%= utente.getEmail() %></p>
-    <p><a href="CatalogoServlet">Vai al catalogo</a></p>
-    <p><a href="LogoutServlet">Logout</a></p>
+    <p>Username: <%= utente.getUsername() %></p>
+    <a href="LogoutServlet">Logout</a>
 </body>
 </html>

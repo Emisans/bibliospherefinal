@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Ordine" %>
-<%@ page import="model.CarrelloItem" %>
+<%@ page import="Model.Ordine" %>
+<%@ page import="Model.CarrelloItem" %>
 <html>
 <head>
     <title>I tuoi ordini</title>

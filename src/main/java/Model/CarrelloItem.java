@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 public class CarrelloItem {
     private Prodotto prodotto;
