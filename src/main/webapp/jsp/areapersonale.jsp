@@ -3,7 +3,7 @@
 <%
     Utente utente = (Utente) session.getAttribute("utente");
     if (utente == null) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("jsp/login.jsp"); // ✅ reindirizza se non loggato
         return;
     }
 %>
@@ -17,6 +17,6 @@
     <h2>Benvenuto, <%= utente.getNome() %>!</h2>
     <p>Email: <%= utente.getEmail() %></p>
     <p>Username: <%= utente.getUsername() %></p>
-    <a href="LogoutServlet">Logout</a>
+    <a href="${pageContext.request.contextPath}/LogoutServlet">Logout</a> <!-- ✅ logout corretto -->
 </body>
 </html>

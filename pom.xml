@@ -34,6 +34,12 @@
             <version>2.3.3</version>
             <scope>provided</scope>
         </dependency>
+        
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+</dependency>
 
         <!-- BCrypt -->
         <dependency>
@@ -43,11 +49,12 @@
         </dependency>
 
         <!-- ✅ MySQL Connector CORRETTO -->
-    <dependency>
-  <groupId>com.mysql</groupId>
-  <artifactId>mysql-connector-j</artifactId>
-  <version>8.3.0</version>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.33</version>
 </dependency>
+
     </dependencies>
 
     <build>

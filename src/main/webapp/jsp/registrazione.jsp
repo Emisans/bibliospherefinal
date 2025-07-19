@@ -2,22 +2,25 @@
 <html>
 <head>
     <title>Registrazione</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
     <h1>Registrati a BiblioSphere</h1>
-    <% String errore = request.getParameter("errore"); %>
+
+    <% String errore = (String) request.getAttribute("errore"); %>
     <% if (errore != null) { %>
         <p style="color:red;">
             <% if (errore.equals("password")) { %>
                 Le password non coincidono.
             <% } else if (errore.equals("emailEsistente")) { %>
                 Email già registrata.
+            <% } else { %>
+                Errore durante la registrazione.
             <% } %>
         </p>
     <% } %>
 
-    <form action="../RegisterServlet" method="post">
+    <form action="<%= request.getContextPath() %>/RegistrazioneServlet" method="post">
         <label for="nome">Nome:</label><br>
         <input type="text" id="nome" name="nome" required><br><br>
 
