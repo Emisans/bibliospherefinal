@@ -1,7 +1,6 @@
 package Control;
 
-import java.io.IOException;
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
@@ -9,6 +8,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import Dao.UtenteDAO;
 import Model.Utente;
+
+import java.io.IOException;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -25,31 +26,28 @@ public class LoginServlet extends HttpServlet {
         try {
             Utente utente = UtenteDAO.doRetrieveByUsername(username);
 
-            if (utente != null) {
-                System.out.println("✅ Utente trovato nel DB");
-                System.out.println("🔐 Password nel DB (cifrata): " + utente.getPassword());
-                boolean match = BCrypt.checkpw(password, utente.getPassword());
-                System.out.println("🔎 Verifica corrispondenza password: " + match);
+            if (utente != null && BCrypt.checkpw(password, utente.getPassword())) {
+                HttpSession session = request.getSession();
+                session.setAttribute("utente", utente);
+                session.setAttribute("email", utente.getEmail());
 
-                if (match) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("utente", utente);
-                    System.out.println("✅ Login riuscito per: " + username);
+                System.out.println("✅ Login riuscito per " + username + " (ruolo: " + utente.getRuolo() + ")");
+
+                if ("admin".equals(utente.getRuolo())) {
+                    response.sendRedirect("jsp/admin/dashboard.jsp"); // puoi cambiare la destinazione
+                } else {
                     response.sendRedirect("jsp/areapersonale.jsp");
-                    return;
                 }
+
+            } else {
+                System.out.println("❌ Login fallito per: " + username);
+                request.setAttribute("errore", "Username o password errati.");
+                request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
             }
-
-            System.out.println("❌ Login fallito per: " + username);
-            request.setAttribute("errore", "Username o password errati.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("jsp/login.jsp");
-            dispatcher.forward(request, response);
-
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errore", "Errore interno durante il login.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("jsp/login.jsp");
-            dispatcher.forward(request, response);
+            request.getRequestDispatcher("jsp/login.jsp").forward(request, response);
         }
     }
 }

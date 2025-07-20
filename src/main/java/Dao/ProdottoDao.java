@@ -11,12 +11,23 @@ public class ProdottoDao {
     private static final String USER = "root";
     private static final String PASSWORD = "admin";
 
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Carica driver solo una volta
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Prodotto> findAll() {
         List<Prodotto> prodotti = new ArrayList<>();
+
+        String sql = "SELECT * FROM prodotti";
+
         try (
             Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM prodotti")
+            PreparedStatement stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()
         ) {
             while (rs.next()) {
                 Prodotto p = new Prodotto(
@@ -31,13 +42,15 @@ public class ProdottoDao {
                 prodotti.add(p);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore durante il recupero dei prodotti: " + e.getMessage());
         }
+
         return prodotti;
     }
 
     public Prodotto findById(int id) {
         String sql = "SELECT * FROM prodotti WHERE id = ?";
+
         try (
             Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = con.prepareStatement(sql)
@@ -57,8 +70,10 @@ public class ProdottoDao {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore durante il recupero del prodotto con ID " + id + ": " + e.getMessage());
         }
+
         return null;
     }
 }
+

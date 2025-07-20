@@ -1,16 +1,11 @@
 package Dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import Model.Utente;
 
 public class UtenteDAO {
 
-    // Caricamento del driver JDBC (opzionale ma consigliato)
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -20,17 +15,20 @@ public class UtenteDAO {
         }
     }
 
-    // Recupera un utente dal database dato lo username
-    public static Utente doRetrieveByUsername(String username) throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/bibliosphere";
-        String user = "root";
-        String pass = "admin";
+    private static final String URL = "jdbc:mysql://localhost:3306/bibliosphere";
+    private static final String USER = "root";
+    private static final String PASS = "admin";
 
+    // 🔎 Recupera un utente dato lo username
+    public static Utente doRetrieveByUsername(String username) {
         Utente utente = null;
 
-        try (Connection con = DriverManager.getConnection(url, user, pass);
-             PreparedStatement ps = con.prepareStatement("SELECT * FROM utenti WHERE username = ?")) {
+        String sql = "SELECT * FROM utenti WHERE username = ?";
 
+        try (
+            Connection con = DriverManager.getConnection(URL, USER, PASS);
+            PreparedStatement ps = con.prepareStatement(sql)
+        ) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
@@ -41,6 +39,7 @@ public class UtenteDAO {
                 utente.setEmail(rs.getString("email"));
                 utente.setUsername(rs.getString("username"));
                 utente.setPassword(rs.getString("password"));
+                utente.setRuolo(rs.getString("ruolo")); // ✅ campo ruolo
             }
 
         } catch (SQLException e) {
@@ -51,19 +50,19 @@ public class UtenteDAO {
         return utente;
     }
 
-    // Salva un nuovo utente nel database
+    // 💾 Salva un nuovo utente nel database
     public static boolean doSave(Utente u) {
-        String url = "jdbc:mysql://localhost:3306/bibliosphere";
-        String user = "root";
-        String pass = "admin";
+        String sql = "INSERT INTO utenti (nome, email, username, password, ruolo) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection con = DriverManager.getConnection(url, user, pass);
-             PreparedStatement ps = con.prepareStatement("INSERT INTO utenti (nome, email, username, password) VALUES (?, ?, ?, ?)")) {
-
+        try (
+            Connection con = DriverManager.getConnection(URL, USER, PASS);
+            PreparedStatement ps = con.prepareStatement(sql)
+        ) {
             ps.setString(1, u.getNome());
             ps.setString(2, u.getEmail());
             ps.setString(3, u.getUsername());
             ps.setString(4, u.getPassword());
+            ps.setString(5, u.getRuolo()); // ✅ campo ruolo
 
             int result = ps.executeUpdate();
             return result > 0;

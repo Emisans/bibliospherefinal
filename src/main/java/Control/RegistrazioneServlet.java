@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 import org.mindrot.jbcrypt.BCrypt;
+
 import Dao.UtenteDAO;
 import Model.Utente;
 
@@ -13,7 +14,9 @@ import Model.Utente;
 public class RegistrazioneServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         String nome = request.getParameter("nome");
         String email = request.getParameter("email");
         String username = request.getParameter("username");
@@ -27,26 +30,27 @@ public class RegistrazioneServlet extends HttpServlet {
             nuovo.setEmail(email);
             nuovo.setUsername(username);
             nuovo.setPassword(passwordCifrata);
+            nuovo.setRuolo("utente"); // ✅ ruolo impostato fisso per la registrazione normale
 
             boolean success = UtenteDAO.doSave(nuovo);
 
             if (success) {
                 System.out.println("✅ Registrazione riuscita per: " + username);
                 request.setAttribute("messaggio", "Registrazione completata con successo!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/login.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("jsp/login.jsp");
                 dispatcher.forward(request, response);
             } else {
                 System.out.println("❌ Errore durante la registrazione.");
                 request.setAttribute("errore", "Errore durante la registrazione.");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/registrazione.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("jsp/registrazione.jsp");
                 dispatcher.forward(request, response);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errore", "Errore interno del server.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/registrazione.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("jsp/registrazione.jsp");
             dispatcher.forward(request, response);
         }
     }
 }
-

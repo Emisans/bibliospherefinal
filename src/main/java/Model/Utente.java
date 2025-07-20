@@ -1,12 +1,30 @@
 package Model;
 
-public class Utente {
+import java.io.Serializable;
+
+public class Utente implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String nome;
     private String email;
     private String username;
     private String password;
+    private String ruolo; // "utente" o "admin"
 
+    public Utente() {
+    }
+
+    public Utente(int id, String nome, String email, String username, String password, String ruolo) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.ruolo = ruolo;
+    }
+
+    // Getter e Setter
     public int getId() {
         return id;
     }
@@ -45,5 +63,18 @@ public class Utente {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(String ruolo) {
+        this.ruolo = ruolo;
+    }
+
+    @Override
+    public String toString() {
+        return "Utente [id=" + id + ", nome=" + nome + ", email=" + email + ", username=" + username + ", ruolo=" + ruolo + "]";
     }
 }
