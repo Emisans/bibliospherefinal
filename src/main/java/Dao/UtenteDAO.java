@@ -1,77 +1,68 @@
 package Dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import Model.Utente;
+import Util.DriverManagerConnectionPool;
 
 public class UtenteDAO {
 
-    static {
+    public static boolean doSave(Utente utente) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver MySQL non trovato!");
-            e.printStackTrace();
+            con = DriverManagerConnectionPool.getConnection();
+            String sql = "INSERT INTO utente (nome, email, username, password, ruolo) VALUES (?, ?, ?, ?, ?)";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, utente.getNome());
+            ps.setString(2, utente.getEmail());
+            ps.setString(3, utente.getUsername());
+            ps.setString(4, utente.getPassword());
+            ps.setString(5, utente.getRuolo());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } finally {
+            if (ps != null) ps.close();
+            if (con != null) DriverManagerConnectionPool.releaseConnection(con);
         }
     }
 
-    private static final String URL = "jdbc:mysql://localhost:3306/bibliosphere";
-    private static final String USER = "root";
-    private static final String PASS = "admin";
+    public static Utente doRetrieveByEmail(String email) throws SQLException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-    // 🔎 Recupera un utente dato lo username
-    public static Utente doRetrieveByUsername(String username) {
-        Utente utente = null;
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            String sql = "SELECT * FROM utente WHERE email = ?";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, email);
 
-        String sql = "SELECT * FROM utenti WHERE username = ?";
-
-        try (
-            Connection con = DriverManager.getConnection(URL, USER, PASS);
-            PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-            ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             if (rs.next()) {
-                utente = new Utente();
-                utente.setId(rs.getInt("id"));
-                utente.setNome(rs.getString("nome"));
-                utente.setEmail(rs.getString("email"));
-                utente.setUsername(rs.getString("username"));
-                utente.setPassword(rs.getString("password"));
-                utente.setRuolo(rs.getString("ruolo")); // ✅ campo ruolo
+                Utente u = new Utente();
+                u.setNome(rs.getString("nome"));
+                u.setCognome(rs.getString("cognome"));
+                u.setEmail(rs.getString("email"));
+                u.setUsername(rs.getString("username"));
+                u.setPassword(rs.getString("password"));
+                u.setRuolo(rs.getString("ruolo"));
+                return u;
             }
 
-        } catch (SQLException e) {
-            System.out.println("ERRORE SQL in doRetrieveByUsername:");
-            e.printStackTrace();
-        }
+            return null;
 
-        return utente;
-    }
-
-    // 💾 Salva un nuovo utente nel database
-    public static boolean doSave(Utente u) {
-        String sql = "INSERT INTO utenti (nome, email, username, password, ruolo) VALUES (?, ?, ?, ?, ?)";
-
-        try (
-            Connection con = DriverManager.getConnection(URL, USER, PASS);
-            PreparedStatement ps = con.prepareStatement(sql)
-        ) {
-            ps.setString(1, u.getNome());
-            ps.setString(2, u.getEmail());
-            ps.setString(3, u.getUsername());
-            ps.setString(4, u.getPassword());
-            ps.setString(5, u.getRuolo()); // ✅ campo ruolo
-
-            int result = ps.executeUpdate();
-            return result > 0;
-
-        } catch (SQLException e) {
-            System.out.println("ERRORE SQL in doSave:");
-            e.printStackTrace();
-            return false;
+        } finally {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) DriverManagerConnectionPool.releaseConnection(con);
         }
     }
 }
-

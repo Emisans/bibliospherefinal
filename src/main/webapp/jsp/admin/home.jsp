@@ -2,20 +2,22 @@
 <%@ page import="Model.Utente" %>
 <%
     Utente utente = (Utente) session.getAttribute("utente");
-    if (utente == null || !"admin".equals(utente.getRuolo())) {
-        response.sendRedirect("../login.jsp");
+    if (utente == null || !"admin".equals(session.getAttribute("ruolo"))) {
+        response.sendRedirect("../errore403.jsp");
         return;
     }
 %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Dashboard Amministratore</title>
+    <title>Area Admin - BiblioSphere</title>
 </head>
 <body>
-    <h1>Benvenuto, <%= utente.getNome() %> (Amministratore)</h1>
+    <h1>Benvenuto, <%= utente.getNome() %> (Admin)</h1>
+
     <ul>
-        <li><a href="prodotti.jsp">Gestione prodotti</a></li>
-        <li><a href="ordini.jsp">Visualizza ordini</a></li>
+        <li><a href="gestioneProdotti.jsp">Gestione Prodotti</a></li>
+        <li><a href="gestioneOrdini.jsp">Gestione Ordini</a></li>
         <li><a href="../LogoutServlet">Logout</a></li>
     </ul>
 </body>

@@ -1,36 +1,24 @@
 package Model;
 
-import java.io.Serializable;
-
-public class Utente implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private int id;
+public class Utente {
     private String nome;
+    private String cognome;
     private String email;
     private String username;
     private String password;
     private String ruolo; // "utente" o "admin"
 
     public Utente() {
+        this.ruolo = "utente";
     }
 
-    public Utente(int id, String nome, String email, String username, String password, String ruolo) {
-        this.id = id;
+    public Utente(String nome, String cognome, String email, String username, String password, String ruolo) {
         this.nome = nome;
+        this.cognome = cognome;
         this.email = email;
         this.username = username;
         this.password = password;
         this.ruolo = ruolo;
-    }
-
-    // Getter e Setter
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
@@ -39,6 +27,14 @@ public class Utente implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCognome() {
+        return cognome;
+    }
+
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
     }
 
     public String getEmail() {
@@ -75,6 +71,7 @@ public class Utente implements Serializable {
 
     @Override
     public String toString() {
-        return "Utente [id=" + id + ", nome=" + nome + ", email=" + email + ", username=" + username + ", ruolo=" + ruolo + "]";
+        return "Utente [nome=" + nome + ", cognome=" + cognome + ", email=" + email +
+                ", username=" + username + ", ruolo=" + ruolo + "]";
     }
 }
