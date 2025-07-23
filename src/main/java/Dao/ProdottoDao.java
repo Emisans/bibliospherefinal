@@ -5,75 +5,105 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Model.Prodotto;
+import Util.DriverManagerConnectionPool;
 
 public class ProdottoDao {
-    private static final String URL = "jdbc:mysql://localhost:3306/bibliosphere";
-    private static final String USER = "root";
-    private static final String PASSWORD = "admin";
 
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver"); // Carica driver solo una volta
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+    public void insert(Prodotto p) throws SQLException {
+        try (Connection con = DriverManagerConnectionPool.getConnection();
+             PreparedStatement ps = con.prepareStatement(
+                     "INSERT INTO prodotto (titolo, autore, nome, descrizione, prezzo, iva, quantita) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+
+            ps.setString(1, p.getTitolo());
+            ps.setString(2, p.getAutore());
+            ps.setString(3, p.getNome());
+            ps.setString(4, p.getDescrizione());
+            ps.setDouble(5, p.getPrezzo());
+            ps.setDouble(6, p.getIva());
+            ps.setInt(7, p.getQuantita());
+            ps.executeUpdate();
         }
     }
 
-    public List<Prodotto> findAll() {
-        List<Prodotto> prodotti = new ArrayList<>();
+    public void update(Prodotto p) throws SQLException {
+        try (Connection con = DriverManagerConnectionPool.getConnection();
+             PreparedStatement ps = con.prepareStatement(
+                     "UPDATE prodotto SET titolo=?, autore=?, nome=?, descrizione=?, prezzo=?, iva=?, quantita=? WHERE id=?")) {
 
-        String sql = "SELECT * FROM prodotti";
-
-        try (
-            Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = con.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()
-        ) {
-            while (rs.next()) {
-                Prodotto p = new Prodotto(
-                    rs.getInt("id"),
-                    rs.getString("nome"),
-                    rs.getString("descrizione"),
-                    rs.getDouble("prezzo"),
-                    rs.getDouble("iva"),
-                    rs.getInt("quantita"),
-                    rs.getString("immagine")
-                );
-                prodotti.add(p);
-            }
-        } catch (SQLException e) {
-            System.err.println("Errore durante il recupero dei prodotti: " + e.getMessage());
+            ps.setString(1, p.getTitolo());
+            ps.setString(2, p.getAutore());
+            ps.setString(3, p.getNome());
+            ps.setString(4, p.getDescrizione());
+            ps.setDouble(5, p.getPrezzo());
+            ps.setDouble(6, p.getIva());
+            ps.setInt(7, p.getQuantita());
+            ps.setInt(8, p.getId());
+            ps.executeUpdate();
         }
-
-        return prodotti;
     }
 
-    public Prodotto findById(int id) {
-        String sql = "SELECT * FROM prodotti WHERE id = ?";
+    public void delete(int id) throws SQLException {
+        try (Connection con = DriverManagerConnectionPool.getConnection();
+             PreparedStatement ps = con.prepareStatement("DELETE FROM prodotto WHERE id = ?")) {
 
-        try (
-            Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
-            PreparedStatement stmt = con.prepareStatement(sql)
-        ) {
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+    public Prodotto doRetrieveById(int id) throws SQLException {
+        try (Connection con = DriverManagerConnectionPool.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM prodotto WHERE id = ?")) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Prodotto(
-                        rs.getInt("id"),
-                        rs.getString("nome"),
-                        rs.getString("descrizione"),
-                        rs.getDouble("prezzo"),
-                        rs.getDouble("iva"),
-                        rs.getInt("quantita"),
-                        rs.getString("immagine")
-                    );
+                    Prodotto p = new Prodotto();
+                    p.setId(rs.getInt("id"));
+                    p.setTitolo(rs.getString("titolo"));
+                    p.setAutore(rs.getString("autore"));
+                    p.setNome(rs.getString("nome"));
+                    p.setDescrizione(rs.getString("descrizione"));
+                    p.setPrezzo(rs.getDouble("prezzo"));
+                    p.setIva(rs.getDouble("iva"));
+                    p.setQuantita(rs.getInt("quantita"));
+                    return p;
                 }
+                return null;
             }
-        } catch (SQLException e) {
-            System.err.println("Errore durante il recupero del prodotto con ID " + id + ": " + e.getMessage());
+        }
+    }
+
+    public List<Prodotto> doRetrieveAll() throws SQLException {
+        List<Prodotto> lista = new ArrayList<>();
+
+        try (Connection con = DriverManagerConnectionPool.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM prodotto ORDER BY id DESC");
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Prodotto p = new Prodotto();
+                p.setId(rs.getInt("id"));
+                p.setTitolo(rs.getString("titolo"));
+                p.setAutore(rs.getString("autore"));
+                p.setNome(rs.getString("nome"));
+                p.setDescrizione(rs.getString("descrizione"));
+                p.setPrezzo(rs.getDouble("prezzo"));
+                p.setIva(rs.getDouble("iva"));
+                p.setQuantita(rs.getInt("quantita"));
+                lista.add(p);
+            }
         }
 
-        return null;
+        return lista;
+    }
+
+    // Alias compatibili con altre servlet
+    public List<Prodotto> findAll() throws SQLException {
+        return doRetrieveAll();
+    }
+
+    public Prodotto findById(int id) throws SQLException {
+        return doRetrieveById(id);
     }
 }
-

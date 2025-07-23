@@ -3,6 +3,7 @@ package Control;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+import java.sql.SQLException;
 
 import Dao.ProdottoDao;
 import Model.Carrello;
@@ -37,6 +38,10 @@ public class AggiungiCarrelloServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             e.printStackTrace();
             response.sendRedirect("CatalogoServlet?errore=quantita");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendRedirect("errore500.jsp");
         }
     }
 }
+
